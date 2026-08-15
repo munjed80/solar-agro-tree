@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
+<rect width="1200" height="850" fill="#fff"/><style>.t{font-family:Arial,sans-serif;fill:#111827}.h{font-size:28px;font-weight:700}.s{font-size:18px}.hex{fill:none;stroke:#9ca3af;stroke-width:2}.tree{fill:#2563eb;stroke:#1e3a8a;stroke-width:1.5}.center{fill:#f59e0b;stroke:#92400e;stroke-width:1.5}.dim{stroke:#374151;stroke-width:1.5}</style>
+<text x="55" y="55" class="t h">D11/S12 Periodic Honeycomb Network</text><text x="55" y="88" class="t s">S12 = 12 m land-cell side. Each vertex tree is shared by three adjacent hexagons.</text>
+<g transform="translate(170,140)">
+<polygon points="208,0 416,120 416,360 208,480 0,360 0,120" class="hex"/>
+<polygon points="624,0 832,120 832,360 624,480 416,360 416,120" class="hex"/>
+<polygon points="416,360 624,480 624,720 416,840 208,720 208,480" class="hex" transform="translate(0,-120)"/>
+<circle cx="208" cy="240" r="12" class="center"/><circle cx="624" cy="240" r="12" class="center"/><circle cx="416" cy="480" r="12" class="center"/>
+<circle cx="208" cy="0" r="10" class="tree"/><circle cx="416" cy="120" r="10" class="tree"/><circle cx="416" cy="360" r="10" class="tree"/><circle cx="208" cy="480" r="10" class="tree"/><circle cx="0" cy="360" r="10" class="tree"/><circle cx="0" cy="120" r="10" class="tree"/>
+<circle cx="624" cy="0" r="10" class="tree"/><circle cx="832" cy="120" r="10" class="tree"/><circle cx="832" cy="360" r="10" class="tree"/><circle cx="624" cy="480" r="10" class="tree"/>
+</g>
+<text x="70" y="760" class="t s">Periodic density: 3 effective trees per hexagon = 80.2 trees/ha ≈ 8,019 trees/km².</text>
+<text x="70" y="795" class="t s">Reference shadow simulation: ~65–66% instantaneous summer shade; ~9.4 mean shade-hours/m²/day.</text>
+</svg>
