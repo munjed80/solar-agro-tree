@@ -1,0 +1,29 @@
+parameter,value,unit,status,notes
+project_area,1,km2,defined,Reference study area
+project_area,100,ha,defined,Equivalent area
+canopy_diameter,11,m,defined,D11 reference canopy tip-to-tip
+canopy_radius,5.5,m,calculated,Half canopy diameter
+canopy_edge_height,5,m,assumed,Reference clearance
+canopy_apex_height,8,m,assumed,Reference apex height
+hex_cell_side,12,m,defined,S12 land-cell side
+hex_cell_area,374.123,m2,calculated,3*sqrt(3)/2*S^2
+adjacent_cell_center_distance,20.785,m,calculated,sqrt(3)*S
+effective_trees_per_cell,3,trees,calculated,1 center + 6/3 shared vertices
+tree_density,80.188,trees/ha,calculated,Periodic network
+reference_tree_count,8018.754,trees/km2,calculated,Theoretical periodic density
+column_reference_diameter,0.6,m,assumed,Land-footprint only; not structural sizing
+inclined_canopy_area_per_tree,92.9,m2,calculated,Preliminary geometric value
+pv_coverage_fraction,0.9,fraction,assumed,Usable face area
+pv_area_per_tree,83.6,m2,calculated+assumed,Canopy area times coverage
+pv_power_density,220,Wp/m2,assumed,Reference module power density
+dc_capacity_per_tree,18.4,kWp,preliminary,Requires module/layout selection
+dc_capacity_per_km2,147.5,MWp,preliminary,Reference concept value
+annual_energy_low,199,GWh/year,preliminary,Concept yield envelope
+annual_energy_central,210,GWh/year,preliminary,Planning case
+annual_energy_high,221,GWh/year,preliminary,Concept yield envelope
+summer_instantaneous_shade,65-66,percent,simulated,Central periodic model
+summer_mean_shadow_hours,9.4,h/m2/day,simulated,Summer-solstice reference
+winter_mean_shadow_hours,6.6,h/m2/day,simulated,Winter-solstice reference
+practical_agricultural_area,90-94,ha,assumed,After roads/services; requires layout
+pump_system_efficiency,0.65,fraction,assumed,Combined motor/pump/system
+irrigation_reference,5,mm/day,scenario,50 m3/ha/day
