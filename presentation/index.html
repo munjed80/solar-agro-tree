@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solar Agro Tree — العرض التفاعلي</title>
+  <meta name="description" content="عرض HTML5 تفاعلي لمشروع أشجار الطاقة الشمسية الزراعية." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">SOLAR AGRO TREE</p>
+        <h1>تحويل الأرض الجافة إلى بنية زراعية–طاقية</h1>
+      </div>
+      <div class="counter" aria-live="polite"><span id="sceneIndex">1</span>/<span id="sceneTotal">6</span></div>
+    </header>
+
+    <section class="stage" aria-live="polite">
+      <svg id="sceneSvg" viewBox="0 0 1200 680" role="img" aria-label="مشهد توضيحي متحرك"></svg>
+      <aside class="scene-copy">
+        <p id="sceneKicker" class="scene-kicker"></p>
+        <h2 id="sceneTitle"></h2>
+        <p id="sceneText"></p>
+        <div id="sceneStats" class="stats"></div>
+      </aside>
+    </section>
+
+    <nav class="controls" aria-label="التنقل بين المشاهد">
+      <button id="prevBtn" type="button">السابق</button>
+      <div id="dots" class="dots"></div>
+      <button id="playBtn" type="button" aria-pressed="false">تشغيل تلقائي</button>
+      <button id="nextBtn" type="button">التالي</button>
+    </nav>
+
+    <footer class="footer-note">
+      نموذج مفاهيمي D11/S12 — الأرقام المعروضة هندسية أولية وتحتاج تحققاً ميدانياً قبل التنفيذ.
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
