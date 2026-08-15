@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solar Agro Tree — Cinematic Showreel</title>
+  <meta name="description" content="Cinematic standalone showreel of the Solar Agro Tree D11/S12 concept with in-browser WebM recording." />
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #04070b;
+      color: #edf4f7;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #04070b; }
+    body { overflow: hidden; }
+    button { font: inherit; }
+
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-height: 640px;
+      overflow: hidden;
+      background: #04070b;
+    }
+
+    #scene {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    .letterbox {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: clamp(34px, 6vh, 72px);
+      background: linear-gradient(180deg, rgba(0,0,0,.95), rgba(0,0,0,.82));
+      z-index: 7;
+      pointer-events: none;
+    }
+
+    .letterbox--top { top: 0; }
+    .letterbox--bottom { bottom: 0; transform: rotate(180deg); }
+
+    .overlay {
+      position: absolute;
+      z-index: 8;
+      left: clamp(16px, 3vw, 40px);
+      right: clamp(16px, 3vw, 40px);
+      pointer-events: none;
+    }
+
+    .topbar {
+      top: clamp(14px, 2.2vh, 26px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .tag {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(5, 12, 15, .62);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-size: 11px;
+      letter-spacing: .15em;
+      color: #96e2df;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .progress {
+      width: min(420px, 42vw);
+      height: 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.12);
+      overflow: hidden;
+    }
+
+    .progress__fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #78e4e1, #ffd887);
+      box-shadow: 0 0 16px rgba(120, 228, 225, .55);
+    }
+
+    .title-card {
+      position: absolute;
+      z-index: 8;
+      left: 50%;
+      top: clamp(72px, 14vh, 124px);
+      transform: translateX(-50%);
+      width: min(900px, calc(100vw - 56px));
+      text-align: center;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 16px;
+      background: rgba(5, 12, 15, .5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: clamp(12px, 2.4vw, 24px);
+      opacity: 0;
+      transition: opacity .45s ease;
+      pointer-events: none;
+    }
+
+    .title-card--active { opacity: 1; }
+
+    .title-card__ar {
+      margin: 0;
+      font-size: clamp(20px, 3.4vw, 40px);
+      font-weight: 700;
+      letter-spacing: -.01em;
+      direction: rtl;
+    }
+
+    .title-card__en {
+      margin: 8px 0 0;
+      font-size: clamp(14px, 1.6vw, 20px);
+      color: rgba(237, 244, 247, .86);
+      letter-spacing: .03em;
+    }
+
+    .lower-third {
+      bottom: clamp(90px, 14vh, 140px);
+      max-width: min(540px, 70vw);
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(5, 12, 15, .54);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity .35s ease;
+    }
+
+    .lower-third--active { opacity: 1; }
+
+    .lower-third h2,
+    .lower-third p {
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    .lower-third h2 {
+      font-size: clamp(18px, 2.3vw, 28px);
+      letter-spacing: -.01em;
+      direction: rtl;
+    }
+
+    .lower-third p {
+      margin-top: 6px;
+      font-size: clamp(12px, 1.3vw, 16px);
+      color: rgba(237, 244, 247, .85);
+    }
+
+    .controls {
+      position: absolute;
+      z-index: 9;
+      left: clamp(16px, 3vw, 40px);
+      bottom: clamp(14px, 2.2vh, 24px);
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .controls button {
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 10px;
+      min-height: 36px;
+      padding: 0 12px;
+      color: #eef5f8;
+      background: rgba(6, 14, 18, .72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      cursor: pointer;
+    }
+
+    .controls button:hover { background: rgba(255,255,255,.14); }
+    .controls button:disabled { opacity: .45; cursor: not-allowed; }
+
+    .disclaimer {
+      position: absolute;
+      z-index: 8;
+      right: clamp(16px, 3vw, 40px);
+      bottom: clamp(14px, 2.2vh, 24px);
+      width: min(640px, 62vw);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 12px;
+      background: rgba(4, 9, 12, .62);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 10px 12px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: rgba(237, 244, 247, .8);
+      pointer-events: none;
+    }
+
+    .capture-note {
+      position: absolute;
+      z-index: 8;
+      top: clamp(56px, 9vh, 84px);
+      right: clamp(16px, 3vw, 40px);
+      border: 1px solid rgba(120, 228, 225, .4);
+      background: rgba(10, 30, 36, .68);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 11px;
+      color: #9fe7e2;
+      opacity: 0;
+      transition: opacity .25s ease;
+      pointer-events: none;
+    }
+
+    body[data-capture='true'] .capture-note { opacity: 1; }
+
+    @media (max-width: 900px) {
+      .disclaimer { width: calc(100vw - 32px); left: 16px; right: 16px; bottom: 58px; }
+      .controls { bottom: 12px; }
+      .lower-third { max-width: calc(100vw - 32px); }
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.184.0/build/three.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <main class="stage">
+    <canvas id="scene" aria-label="Solar Agro Tree cinematic showreel scene"></canvas>
+
+    <div class="letterbox letterbox--top" aria-hidden="true"></div>
+    <div class="letterbox letterbox--bottom" aria-hidden="true"></div>
+
+    <section class="overlay topbar" aria-hidden="true">
+      <div class="tag">SOLAR AGRO TREE · D11/S12</div>
+      <div class="progress"><div id="progressFill" class="progress__fill"></div></div>
+    </section>
+
+    <section id="introTitle" class="title-card title-card--active" aria-hidden="true">
+      <h1 class="title-card__ar">بنية زراعية كهروضوئية للأراضي القاحلة</h1>
+      <p class="title-card__en">Modular Agrivoltaic Infrastructure for Arid Land</p>
+    </section>
+
+    <section id="lowerThird" class="overlay lower-third" aria-hidden="true">
+      <h2 id="cardAr"></h2>
+      <p id="cardEn"></p>
+    </section>
+
+    <div class="controls" role="group" aria-label="Showreel playback controls">
+      <button id="playPause" type="button">Pause</button>
+      <button id="restart" type="button">Restart</button>
+      <button id="record" type="button">Record</button>
+    </div>
+
+    <aside class="disclaimer" aria-live="polite">
+      تصور مفاهيمي بصري فقط — ليس مخطط تنفيذ إنشائي ولا نموذج CAD بنيوي.<br />
+      Conceptual visualization only — not a construction drawing and not a structural CAD model.
+    </aside>
+
+    <aside class="capture-note" aria-hidden="true">Capture mode active: fixed 30 fps deterministic timeline.</aside>
+  </main>
+
+  <noscript>This showreel requires JavaScript.</noscript>
+
+  <script type="module">
+    import * as THREE from 'three';
+
+    const canvas = document.querySelector('#scene');
+    const playPauseButton = document.querySelector('#playPause');
+    const restartButton = document.querySelector('#restart');
+    const recordButton = document.querySelector('#record');
+    const progressFill = document.querySelector('#progressFill');
+    const introTitle = document.querySelector('#introTitle');
+    const lowerThird = document.querySelector('#lowerThird');
+    const cardAr = document.querySelector('#cardAr');
+    const cardEn = document.querySelector('#cardEn');
+
+    const params = new URLSearchParams(window.location.search);
+    const captureMode = params.get('capture') === '1';
+    const CAPTURE_FPS = 30;
+    const LOOP_DURATION = 40;
+
+    if (captureMode) {
+      document.body.dataset.capture = 'true';
+    }
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x0a1317, 0.0019);
+
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 1800);
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: false,
+      preserveDrawingBuffer: captureMode,
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+
+    const skyUniforms = {
+      topColor: { value: new THREE.Color(0x78b7ff) },
+      bottomColor: { value: new THREE.Color(0xffcc85) },
+      offset: { value: 80 },
+      exponent: { value: 0.78 },
+    };
+
+    const sky = new THREE.Mesh(
+      new THREE.SphereGeometry(1500, 32, 24),
+      new THREE.ShaderMaterial({
+        uniforms: skyUniforms,
+        side: THREE.BackSide,
+        depthWrite: false,
+        vertexShader: `
+          varying vec3 vWorldPosition;
+          void main() {
+            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+            vWorldPosition = worldPosition.xyz;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 topColor;
+          uniform vec3 bottomColor;
+          uniform float offset;
+          uniform float exponent;
+          varying vec3 vWorldPosition;
+          void main() {
+            float h = normalize(vWorldPosition + vec3(0.0, offset, 0.0)).y;
+            float t = max(pow(max(h, 0.0), exponent), 0.0);
+            gl_FragColor = vec4(mix(bottomColor, topColor, t), 1.0);
+          }
+        `,
+      })
+    );
+    scene.add(sky);
+
+    const hemi = new THREE.HemisphereLight(0xc8ddff, 0x1f2618, 0.72);
+    scene.add(hemi);
+
+    const sun = new THREE.DirectionalLight(0xfff0cb, 3.8);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.camera.near = 10;
+    sun.shadow.camera.far = 1200;
+    sun.shadow.camera.left = -420;
+    sun.shadow.camera.right = 420;
+    sun.shadow.camera.top = 420;
+    sun.shadow.camera.bottom = -420;
+    scene.add(sun);
+    scene.add(sun.target);
+
+    const sunOrb = new THREE.Mesh(
+      new THREE.SphereGeometry(3.8, 24, 16),
+      new THREE.MeshBasicMaterial({ color: 0xffc86b, transparent: true, opacity: 0.9 })
+    );
+    scene.add(sunOrb);
+
+    const fieldRadius = 8;
+    const cellRadius = 12;
+    const canopyRadius = 5.5;
+    const edgeHeight = 5;
+    const apexHeight = 8;
+
+    const worldRadius = cellRadius * (fieldRadius + 2);
+    const groundSize = worldRadius * 3.2;
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(groundSize, groundSize),
+      new THREE.MeshStandardMaterial({ color: 0x2f3a29, roughness: 0.98, metalness: 0.02 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    const cropGroup = new THREE.Group();
+    scene.add(cropGroup);
+    const cropMaterial = new THREE.MeshStandardMaterial({ color: 0x4f7140, roughness: 1.0, metalness: 0.0 });
+    for (let z = -groundSize * 0.5; z <= groundSize * 0.5; z += 1.9) {
+      const row = new THREE.Mesh(new THREE.BoxGeometry(groundSize * 0.9, 0.11, 0.32), cropMaterial);
+      row.position.set(0, 0.06, z);
+      row.receiveShadow = true;
+      cropGroup.add(row);
+    }
+
+    const structureMaterial = new THREE.MeshStandardMaterial({
+      color: 0xaab6b8,
+      metalness: 0.74,
+      roughness: 0.34,
+    });
+
+    const railMaterial = new THREE.MeshStandardMaterial({
+      color: 0x7d8a8e,
+      metalness: 0.82,
+      roughness: 0.26,
+    });
+
+    const pvMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x0d4f5e,
+      roughness: 0.24,
+      metalness: 0.12,
+      clearcoat: 0.7,
+      clearcoatRoughness: 0.2,
+      side: THREE.DoubleSide,
+    });
+
+    function triangleGeometry(a, b, c) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        a.x, a.y, a.z,
+        b.x, b.y, b.z,
+        c.x, c.y, c.z,
+      ]), 3));
+      geometry.computeVertexNormals();
+      return geometry;
+    }
+
+    function cylinderBetween(a, b, radius, material) {
+      const dir = new THREE.Vector3().subVectors(b, a);
+      const length = dir.length();
+      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, length, 10), material);
+      mesh.position.copy(a).add(b).multiplyScalar(0.5);
+      mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      return mesh;
+    }
+
+    function createSolarTree() {
+      const group = new THREE.Group();
+
+      const column = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.38, edgeHeight, 20), structureMaterial);
+      column.position.y = edgeHeight / 2;
+      column.castShadow = true;
+      column.receiveShadow = true;
+      group.add(column);
+
+      const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.78, 0.78, 0.22, 20), structureMaterial);
+      collar.position.y = edgeHeight - 0.08;
+      collar.castShadow = true;
+      collar.receiveShadow = true;
+      group.add(collar);
+
+      const apex = new THREE.Vector3(0, apexHeight, 0);
+      const rim = [];
+      for (let i = 0; i < 6; i += 1) {
+        const angle = Math.PI / 6 + i * Math.PI / 3;
+        rim.push(new THREE.Vector3(
+          canopyRadius * Math.cos(angle),
+          edgeHeight,
+          canopyRadius * Math.sin(angle)
+        ));
+      }
+
+      for (let i = 0; i < 6; i += 1) {
+        const a = rim[i];
+        const b = rim[(i + 1) % 6];
+        const panel = new THREE.Mesh(triangleGeometry(apex, a, b), pvMaterial);
+        panel.castShadow = true;
+        panel.receiveShadow = true;
+        group.add(panel);
+
+        group.add(cylinderBetween(apex, a, 0.052, railMaterial));
+        group.add(cylinderBetween(a, b, 0.052, railMaterial));
+      }
+
+      const cap = new THREE.Mesh(new THREE.SphereGeometry(0.16, 12, 8), structureMaterial);
+      cap.position.copy(apex);
+      cap.castShadow = true;
+      cap.receiveShadow = true;
+      group.add(cap);
+
+      return group;
+    }
+
+    const field = new THREE.Group();
+    scene.add(field);
+
+    function axialToWorld(q, r) {
+      return {
+        x: cellRadius * (q + r / 2),
+        z: cellRadius * (Math.sqrt(3) * 0.5 * r),
+      };
+    }
+
+    for (let q = -fieldRadius; q <= fieldRadius; q += 1) {
+      for (let r = -fieldRadius; r <= fieldRadius; r += 1) {
+        const s = -q - r;
+        if (Math.max(Math.abs(q), Math.abs(r), Math.abs(s)) > fieldRadius) continue;
+        const tree = createSolarTree();
+        const pos = axialToWorld(q, r);
+        tree.position.set(pos.x, 0, pos.z);
+        tree.rotation.y = ((q * 13 + r * 7) % 6) * (Math.PI / 18);
+        field.add(tree);
+      }
+    }
+
+    const target = new THREE.Vector3(0, 3.5, 0);
+    const tempVec = new THREE.Vector3();
+
+    const shots = [
+      {
+        name: 'heroRise',
+        duration: 8,
+        position(t) {
+          const e = THREE.MathUtils.smootherstep(t, 0, 1);
+          tempVec.set(
+            THREE.MathUtils.lerp(-26, 14, e),
+            THREE.MathUtils.lerp(5.2, 14.4, e),
+            THREE.MathUtils.lerp(22, 18, e)
+          );
+          return tempVec;
+        },
+        lookAt(t) {
+          return new THREE.Vector3(0, THREE.MathUtils.lerp(3.3, 5.2, t), 0);
+        },
+      },
+      {
+        name: 'networkSweep',
+        duration: 8,
+        position(t) {
+          const e = THREE.MathUtils.smootherstep(t, 0, 1);
+          tempVec.set(
+            THREE.MathUtils.lerp(-150, 152, e),
+            THREE.MathUtils.lerp(46, 52, e),
+            THREE.MathUtils.lerp(96, -90, e)
+          );
+          return tempVec;
+        },
+        lookAt() { return target; },
+      },
+      {
+        name: 'topView',
+        duration: 7,
+        position(t) {
+          const e = THREE.MathUtils.smoothstep(t, 0, 1);
+          const drift = Math.sin(e * Math.PI * 2) * 4;
+          tempVec.set(drift, 226, drift * 0.8);
+          return tempVec;
+        },
+        lookAt() { return new THREE.Vector3(0, 0, 0); },
+      },
+      {
+        name: 'orbit',
+        duration: 10,
+        position(t) {
+          const angle = t * Math.PI * 2;
+          const radius = 128;
+          tempVec.set(
+            Math.cos(angle) * radius,
+            42 + Math.sin(angle * 2) * 5,
+            Math.sin(angle) * radius
+          );
+          return tempVec;
+        },
+        lookAt() { return new THREE.Vector3(0, 2.8, 0); },
+      },
+      {
+        name: 'duskClose',
+        duration: 7,
+        position(t) {
+          const e = THREE.MathUtils.smootherstep(t, 0, 1);
+          tempVec.set(
+            THREE.MathUtils.lerp(18, -10, e),
+            THREE.MathUtils.lerp(7.6, 6.2, e),
+            THREE.MathUtils.lerp(-19, -12, e)
+          );
+          return tempVec;
+        },
+        lookAt() { return new THREE.Vector3(0, 4.5, 0); },
+      },
+    ];
+
+    const cards = [
+      {
+        start: 8,
+        end: 15,
+        ar: '≈ ٨٬٠١٩ شجرة شمسية لكل كيلومتر مربع',
+        en: '≈ 8,019 solar trees per km²',
+      },
+      {
+        start: 15,
+        end: 22,
+        ar: '≈ ١٤٧٫٥ ميجاواط ذروة قدرة كهروضوئية كلية',
+        en: '≈ 147.5 MWp total PV capacity',
+      },
+      {
+        start: 22,
+        end: 29,
+        ar: '١٩٩–٢٢١ جيجاواط ساعة توليد سنوي مُقدّر',
+        en: '199–221 GWh estimated annual generation',
+      },
+      {
+        start: 29,
+        end: 36,
+        ar: '≈ ٦٥٪ ظل صيفي للمحاصيل',
+        en: '≈ 65% summer shade for crops',
+      },
+    ];
+
+    let running = true;
+    let timelineSeconds = 0;
+    let lastTime = performance.now();
+
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let recording = false;
+    let recordRemaining = 0;
+
+    function getActiveShot(timeline) {
+      const localTime = ((timeline % LOOP_DURATION) + LOOP_DURATION) % LOOP_DURATION;
+      let cursor = 0;
+      for (const shot of shots) {
+        const end = cursor + shot.duration;
+        if (localTime <= end) {
+          const t = (localTime - cursor) / shot.duration;
+          return { shot, t: THREE.MathUtils.clamp(t, 0, 1), loopT: localTime / LOOP_DURATION };
+        }
+        cursor = end;
+      }
+      const fallback = shots[shots.length - 1];
+      return { shot: fallback, t: 1, loopT: 1 };
+    }
+
+    function updateSkyAndSun(loopT) {
+      const dawn = new THREE.Color(0xffb172);
+      const noon = new THREE.Color(0x87c8ff);
+      const dusk = new THREE.Color(0xfb8a6e);
+      const horizonDawn = new THREE.Color(0x2a394f);
+      const horizonNoon = new THREE.Color(0xbfd9ff);
+      const horizonDusk = new THREE.Color(0x2b2338);
+
+      const day = Math.sin(loopT * Math.PI);
+      const warm = Math.abs(loopT - 0.5) * 2;
+
+      const warmTop = loopT < 0.5 ? dawn : dusk;
+      const skyTop = noon.clone().lerp(warmTop, warm * 0.7);
+      const skyBottom = horizonNoon.clone().lerp(loopT < 0.5 ? horizonDawn : horizonDusk, warm);
+      skyUniforms.topColor.value.copy(skyTop);
+      skyUniforms.bottomColor.value.copy(skyBottom);
+
+      const azimuth = THREE.MathUtils.lerp(-Math.PI * 0.7, Math.PI * 0.7, loopT);
+      const elevation = THREE.MathUtils.lerp(8, 66, day);
+      const sunRadius = worldRadius * 1.7;
+
+      sun.position.set(
+        sunRadius * Math.sin(azimuth),
+        elevation,
+        sunRadius * Math.cos(azimuth)
+      );
+      sun.target.position.set(0, 0, 0);
+      sunOrb.position.copy(sun.position);
+      sun.intensity = THREE.MathUtils.lerp(1.7, 4.5, day);
+      sun.color.copy(new THREE.Color().lerpColors(new THREE.Color(0xffb169), new THREE.Color(0xfff2cd), day));
+      hemi.intensity = THREE.MathUtils.lerp(0.44, 0.82, day);
+    }
+
+    function updateOverlays(loopSeconds) {
+      const loopLocal = ((loopSeconds % LOOP_DURATION) + LOOP_DURATION) % LOOP_DURATION;
+      progressFill.style.width = `${(loopLocal / LOOP_DURATION) * 100}%`;
+
+      const introActive = loopLocal < 6.4;
+      introTitle.classList.toggle('title-card--active', introActive);
+
+      const active = cards.find((card) => loopLocal >= card.start && loopLocal < card.end);
+      if (active) {
+        cardAr.textContent = active.ar;
+        cardEn.textContent = active.en;
+        lowerThird.classList.add('lower-third--active');
+      } else {
+        lowerThird.classList.remove('lower-third--active');
+      }
+    }
+
+    function updateCamera(timeline) {
+      const { shot, t } = getActiveShot(timeline);
+      const desired = shot.position(t).clone();
+      if (captureMode) {
+        camera.position.copy(desired);
+      } else {
+        camera.position.lerp(desired, 0.08);
+      }
+      camera.lookAt(shot.lookAt(t));
+    }
+
+    function resizeRenderer() {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const expectedW = Math.floor(width * renderer.getPixelRatio());
+      const expectedH = Math.floor(height * renderer.getPixelRatio());
+      const needResize = canvas.width !== expectedW || canvas.height !== expectedH;
+      if (needResize) {
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+    }
+
+    function finishRecording() {
+      if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+      mediaRecorder.stop();
+    }
+
+    function startRecording() {
+      if (recording) return;
+      timelineSeconds = 0;
+      running = true;
+      playPauseButton.textContent = 'Pause';
+      recordRemaining = LOOP_DURATION;
+      recordedChunks = [];
+
+      const stream = canvas.captureStream(CAPTURE_FPS);
+      const options = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+        ? { mimeType: 'video/webm;codecs=vp9' }
+        : { mimeType: 'video/webm' };
+
+      mediaRecorder = new MediaRecorder(stream, options);
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      };
+      mediaRecorder.onstop = () => {
+        recording = false;
+        recordButton.disabled = false;
+        recordButton.textContent = 'Record';
+
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'solar-agro-tree-showreel.webm';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      mediaRecorder.start();
+      recording = true;
+      recordButton.disabled = true;
+      recordButton.textContent = 'Recording…';
+    }
+
+    function animate(now) {
+      resizeRenderer();
+
+      const delta = captureMode
+        ? 1 / CAPTURE_FPS
+        : Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      if (running) {
+        timelineSeconds += delta;
+        if (recording) {
+          recordRemaining -= delta;
+          if (recordRemaining <= 0) {
+            finishRecording();
+          }
+        }
+      }
+
+      const loopT = ((timelineSeconds % LOOP_DURATION) + LOOP_DURATION) % LOOP_DURATION / LOOP_DURATION;
+      updateSkyAndSun(loopT);
+      updateCamera(timelineSeconds);
+      updateOverlays(timelineSeconds);
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    playPauseButton.addEventListener('click', () => {
+      running = !running;
+      playPauseButton.textContent = running ? 'Pause' : 'Play';
+    });
+
+    restartButton.addEventListener('click', () => {
+      timelineSeconds = 0;
+      updateOverlays(0);
+    });
+
+    recordButton.addEventListener('click', startRecording);
+
+    window.addEventListener('keydown', (event) => {
+      if (event.code === 'Space') {
+        event.preventDefault();
+        playPauseButton.click();
+      }
+      if (event.key.toLowerCase() === 'r') {
+        event.preventDefault();
+        restartButton.click();
+      }
+    });
+
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
