@@ -32,6 +32,14 @@ jobs:
       - name: Run reference calculations
         run: python src/calculations/reference_model.py
 
+      - name: Run wind-load precheck
+        run: >-
+          python src/calculations/wind_load_precheck.py
+          --csv /tmp/wind-precheck.csv
+
+      - name: Verify generated wind precheck
+        run: test -s /tmp/wind-precheck.csv
+
       - name: Smoke-test periodic shadow model
         run: >-
           python src/simulation/shadow_periodic.py
