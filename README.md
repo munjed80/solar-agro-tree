@@ -6,6 +6,12 @@ Solar Agro Tree combines elevated photovoltaic canopies, dynamic agricultural sh
 
 > **Project status:** Concept engineering / pre-feasibility. This repository contains calculated geometry, simulated shadow behavior, preliminary energy and water models, and a staged pilot plan. It is not yet a construction-ready design.
 
+## Reference geometry
+
+![D11 solar tree geometry](docs/diagrams/D11_TREE_GEOMETRY.svg)
+
+![D11/S12 periodic network](docs/diagrams/D11_PERIODIC_NETWORK.svg)
+
 ## Reference design: D11/S12 — 1 km²
 
 | Parameter | Reference value | Status |
@@ -37,6 +43,20 @@ The primary objective is not to maximize electricity production alone. It is to 
 3. **Water** — power wells, pumping, storage, treatment, and drip irrigation.
 4. **Agriculture** — preserve most of the ground for productive use.
 
+## Reproducible model
+
+Install the Python dependencies and run the reference calculations:
+
+```bash
+python -m pip install -r requirements.txt
+python src/calculations/reference_model.py
+python src/simulation/shadow_periodic.py --output simulations/shadow/generated
+```
+
+The shadow script reproduces a periodic D11/S12 interior-window model and exports summary CSV files, hourly shade fractions, and seasonal shade-hour maps.
+
+Reference values used in this repository are also stored in `simulations/shadow/reference_results.csv`.
+
 ## Repository structure
 
 - `README_AR.md` — Arabic project introduction.
@@ -48,10 +68,14 @@ The primary objective is not to maximize electricity production alone. It is to 
 - `SHADOW_SIMULATION.md` — periodic shadow-model methodology and results.
 - `COST_MODEL.md` — CAPEX/OPEX framework.
 - `PILOT_PLAN.md` — staged prototype and pilot program.
+- `VALIDATION_PLAN.md` — measurements and decision gates required before scale-up.
 - `RISKS_AND_LIMITATIONS.md` — engineering and resource risks.
 - `GOVERNMENT_PROPOSAL_AR.md` — concise Arabic public-sector proposal.
+- `docs/diagrams/` — reference engineering diagrams.
 - `data/` — reference assumptions and calculated parameters.
-- `src/` — reproducible engineering calculations.
+- `src/calculations/` — analytical calculations.
+- `src/simulation/` — reproducible numerical simulations.
+- `simulations/` — reference and generated outputs.
 
 ## Evidence classification
 
@@ -80,6 +104,8 @@ All quantitative statements should be treated as one of:
 - Prototype manufacturing cost.
 - Grid-connection study.
 - Environmental and water-resource approvals.
+
+See `VALIDATION_PLAN.md` for the measurement program and scale-up decision gates.
 
 ## Intellectual property
 
