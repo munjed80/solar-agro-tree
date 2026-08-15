@@ -513,16 +513,16 @@ const timeline = [
     label: '01 · THE CHALLENGE',
     ar: 'الأرض القاحلة ليست بلا مورد',
     en: 'Arid land has one resource in abundance: sunlight.',
-    camera(t) { return new THREE.Vector3(-110 + 32 * t, 5.2 + 1.8 * t, 118 - 18 * t); },
-    target: new THREE.Vector3(0, 2.5, 0),
+    camera(t) { return new THREE.Vector3(-110 + 32 * t, 18 + 4 * t, 118 - 18 * t); },
+    target: new THREE.Vector3(0, 4.0, 0),
   },
   {
     start: 8,  end: 24,
     label: '02 · GROUND LEVEL',
     ar: 'الزراعة تبقى على الأرض… والطاقة ترتفع فوقها',
     en: 'The camera moves between crops and columns at working height.',
-    camera(t) { return new THREE.Vector3(-78 + 152 * t, 2.4 + 0.7 * Math.sin(Math.PI * t), 18 * Math.sin(t * Math.PI * 1.7)); },
-    lookAhead(t) { return new THREE.Vector3(-48 + 152 * t, 3.5, 4 * Math.sin(t * Math.PI * 1.7)); },
+    camera(t) { return new THREE.Vector3(-78 + 152 * t, 4.5 + 1.2 * Math.sin(Math.PI * t), 18 * Math.sin(t * Math.PI * 1.7)); },
+    lookAhead(t) { return new THREE.Vector3(-48 + 152 * t, 6.5, 4 * Math.sin(t * Math.PI * 1.7)); },
   },
   {
     start: 24, end: 36,
@@ -565,8 +565,8 @@ const timeline = [
     label: '07 · AGRICULTURE · ≈65% summer shade',
     ar: '≈ 65% ظل صيفي — الظل والطاقة والماء والمحاصيل نظام واحد',
     en: '≈ 65% summer shade fraction — shade, energy, water and crops as one system.',
-    camera(t) { return new THREE.Vector3(70 - 142 * t, 3.0, -12 + 30 * Math.sin(Math.PI * t)); },
-    lookAhead(t) { return new THREE.Vector3(42 - 142 * t, 3.2, -6 + 20 * Math.sin(Math.PI * t)); },
+    camera(t) { return new THREE.Vector3(70 - 142 * t, 5.5, -12 + 30 * Math.sin(Math.PI * t)); },
+    lookAhead(t) { return new THREE.Vector3(42 - 142 * t, 7.0, -6 + 20 * Math.sin(Math.PI * t)); },
   },
   {
     start: 88, end: 96,
@@ -636,9 +636,11 @@ function updateSun(animTime) {
   const { rise, set } = sunriseSunset(LAT_DEG, season.declDeg);
   const dayLen = set - rise;
 
-  // Map animation time to solar time (dawn → dusk)
-  // One full LOOP_DURATION covers sunrise to sunset
-  const solarH = rise + (animTime / LOOP_DURATION) * dayLen;
+  // Constrain animated arc to mid-morning → mid-afternoon (10%→90% of daylight)
+  // so the sun stays well above the horizon for the entire reel while shadow
+  // directions and lengths remain physically correct via solarPosition().
+  const dayFrac = 0.10 + (animTime / LOOP_DURATION) * 0.80;
+  const solarH  = rise + dayFrac * dayLen;
 
   const { altRad, azRad } = solarPosition(LAT_DEG, solarH, season.declDeg);
   const altDeg = THREE.MathUtils.radToDeg(altRad);
@@ -653,9 +655,10 @@ function updateSun(animTime) {
   sunLight.target.position.set(0, 0, 0);
   sunOrb.position.set(sunX * 0.9, sunY * 0.9, sunZ * 0.9);
 
-  // Intensity follows sin of altitude
-  const dayFactor = Math.max(0, Math.sin(altRad));
-  sunLight.intensity = THREE.MathUtils.lerp(0.2, 4.8, dayFactor);
+  // Intensity follows sin of altitude; floor at 0.35 so the scene never falls
+  // to near-darkness even if a low-angle frame occurs at loop boundaries.
+  const dayFactor = Math.max(0.35, Math.sin(altRad));
+  sunLight.intensity = THREE.MathUtils.lerp(1.6, 4.8, dayFactor);
 
   // Color temperature: warm dawn/dusk (#ff7a3c) → white noon (#fff5d6)
   const warmColor = new THREE.Color(0xff8842);
@@ -674,7 +677,7 @@ function updateSun(animTime) {
     THREE.MathUtils.lerp(0.04, 0.26, dayFactor)
   );
 
-  hemi.intensity    = THREE.MathUtils.lerp(0.5, 1.9, dayFactor);
+  hemi.intensity    = THREE.MathUtils.lerp(1.1, 1.9, dayFactor);
   fill.intensity    = THREE.MathUtils.lerp(0.1, 0.7, dayFactor);
   scene.fog.color.setHSL(0.57, 0.3, THREE.MathUtils.lerp(0.12, 0.58, dayFactor));
 
