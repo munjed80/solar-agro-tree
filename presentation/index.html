@@ -14,11 +14,16 @@
         <p class="eyebrow">SOLAR AGRO TREE</p>
         <h1>تحويل الأرض الجافة إلى بنية زراعية–طاقية</h1>
       </div>
-      <div class="counter" aria-live="polite"><span id="sceneIndex">1</span>/<span id="sceneTotal">6</span></div>
+      <div class="counter" aria-live="polite"><span id="sceneIndex">1</span>/<span id="sceneTotal">7</span></div>
     </header>
 
     <section class="stage" aria-live="polite">
-      <svg id="sceneSvg" viewBox="0 0 1200 680" role="img" aria-label="مشهد توضيحي متحرك"></svg>
+      <div id="visualStage" class="visual-stage" data-mode="svg">
+        <svg id="sceneSvg" viewBox="0 0 1200 680" role="img" aria-label="مشهد توضيحي متحرك"></svg>
+        <canvas id="threeCanvas" aria-label="مشهد ثلاثي الأبعاد لشجرة الطاقة الشمسية والخلية السداسية"></canvas>
+        <div id="threeBadge" class="three-badge" aria-hidden="true">3D · D11/S12</div>
+      </div>
+
       <aside class="scene-copy">
         <p id="sceneKicker" class="scene-kicker"></p>
         <h2 id="sceneTitle"></h2>
@@ -40,5 +45,6 @@
   </main>
 
   <script src="app.js"></script>
+  <script type="module" src="three-inline.js"></script>
 </body>
 </html>
