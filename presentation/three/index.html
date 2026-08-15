@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solar Agro Tree — Three.js Prototype</title>
+  <meta name="description" content="Prototype Three.js visualization of one D11 solar tree and its surrounding hexagonal network." />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.184.0/build/three.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <main class="stage">
+    <canvas id="scene" aria-label="Three-dimensional Solar Agro Tree prototype"></canvas>
+
+    <section class="hud hud--top">
+      <div>
+        <span class="eyebrow">SOLAR AGRO TREE / D11-S12</span>
+        <h1>Three.js Prototype Scene</h1>
+        <p>One elevated six-face solar tree, one seven-tree hexagonal cell, camera choreography, and animated sun.</p>
+      </div>
+      <div class="stats" aria-label="Reference dimensions">
+        <span><strong>11 m</strong> canopy</span>
+        <span><strong>5 m</strong> edge</span>
+        <span><strong>8 m</strong> apex</span>
+        <span><strong>12 m</strong> cell radius</span>
+      </div>
+    </section>
+
+    <section class="hud hud--bottom">
+      <div class="controls">
+        <button id="playPause" type="button">Pause</button>
+        <button id="reset" type="button">Reset</button>
+        <label>
+          <span>Camera</span>
+          <select id="shot">
+            <option value="orbit">Orbit</option>
+            <option value="hero">Hero tree</option>
+            <option value="network">Network</option>
+            <option value="top">Top view</option>
+          </select>
+        </label>
+        <label>
+          <span>Speed</span>
+          <input id="speed" type="range" min="0.25" max="2" step="0.25" value="1" />
+        </label>
+      </div>
+      <div class="capture-note">
+        Add <code>?capture=1</code> for a fixed 30 fps deterministic timeline suitable for screen capture.
+      </div>
+    </section>
+
+    <div class="legend" aria-hidden="true">
+      <span><i class="key key--pv"></i> PV canopy</span>
+      <span><i class="key key--crop"></i> agricultural ground</span>
+      <span><i class="key key--sun"></i> sun path</span>
+    </div>
+  </main>
+
+  <noscript>This prototype requires JavaScript.</noscript>
+  <script type="module" src="./scene.js"></script>
+</body>
+</html>
