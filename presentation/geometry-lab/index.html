@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Solar Agro Tree — Geometry Lab</title>
+  <meta name="description" content="Interactive geometry lab for validating the Solar Agro Tree honeycomb land cells, shared tree positions and pentagonal solar-tree canopy." />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+  {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.184.0/build/three.module.js"}}
+  </script>
+</head>
+<body>
+  <main class="app">
+    <canvas id="scene"></canvas>
+
+    <header class="topbar">
+      <div>
+        <strong>مختبر هندسة Solar Agro Tree</strong>
+        <small>D11 canopy / S12 honeycomb lattice</small>
+      </div>
+      <div class="status" id="status">جاهز</div>
+    </header>
+
+    <section class="toolbar" aria-label="Geometry controls">
+      <div class="group stages">
+        <button data-stage="1" class="active">1 خلية</button>
+        <button data-stage="7">7 خلايا</button>
+        <button data-stage="50">50 خلية</button>
+        <button data-stage="1km">1 كم²</button>
+      </div>
+      <div class="group views">
+        <button id="topView">من الأعلى</button>
+        <button id="groundView">مستوى الأرض</button>
+        <button id="orbitView">منظور مائل</button>
+      </div>
+      <div class="group toggles">
+        <label><input id="hexToggle" type="checkbox" checked /> حدود السداسيات</label>
+        <label><input id="sharedToggle" type="checkbox" checked /> الأشجار المشتركة</label>
+        <label><input id="dimensionToggle" type="checkbox" checked /> الأبعاد</label>
+      </div>
+    </section>
+
+    <aside class="metrics">
+      <h2 id="stageTitle">خلية واحدة</h2>
+      <div class="metric"><span>الخلايا</span><b id="cellCount">1</b></div>
+      <div class="metric"><span>إجمالي الأشجار الفريدة</span><b id="treeCount">7</b></div>
+      <div class="metric"><span>أشجار مراكز الخلايا</span><b id="centerTreeCount">1</b></div>
+      <div class="metric"><span>أشجار الرؤوس المشتركة</span><b id="vertexTreeCount">6</b></div>
+      <div class="metric"><span>ضلع الخلية S</span><b>12.00 m</b></div>
+      <div class="metric"><span>مركز → رأس</span><b>12.00 m</b></div>
+      <div class="metric"><span>مركز → مركز مجاور</span><b>20.78 m</b></div>
+      <div class="metric"><span>قطر المظلة الخماسية D</span><b>11.00 m</b></div>
+      <p id="stageNote">شجرة في المركز وست أشجار على رؤوس السداسي.</p>
+    </aside>
+
+    <aside class="legend">
+      <span><i class="dot center"></i> شجرة مركز خلية</span>
+      <span><i class="dot shared"></i> شجرة رأس مشتركة</span>
+      <span><i class="line"></i> حد خلية سداسية</span>
+      <small>المظلة خماسية الأوجه؛ الخلية الأرضية سداسية. الشكلان مستقلان.</small>
+    </aside>
+
+    <div class="viewHint">اسحب لتدوير المشهد · استخدم إصبعين/العجلة للتقريب</div>
+  </main>
+  <script type="module" src="./geometry-lab.js"></script>
+</body>
+</html>
