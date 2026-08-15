@@ -97,7 +97,8 @@ http://localhost:8000/presentation/showreel/?capture=1
 ### In-browser recording
 
 Click **Record** — a full loop (~96 s) is recorded and downloaded automatically.
-The browser will attempt MP4 (`video/mp4;codecs=avc1`) first, falling back to WebM.
+The browser will attempt MP4 first (supported on Safari 15.4+), falling back to WebM
+on Chrome/Firefox.
 File name: `solar-agro-tree-showreel.mp4` or `.webm`
 
 ### Convert WebM → MP4 (FFmpeg, for iPhone compatibility)

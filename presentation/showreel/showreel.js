@@ -135,7 +135,7 @@ function estimateShadeFraction(altDeg) {
 const renderer = new THREE.WebGLRenderer({
   canvas,
   antialias: true,
-  preserveDrawingBuffer: true, // always on for recording compatibility
+  preserveDrawingBuffer: captureMode, // only enable for deterministic capture mode
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
 renderer.shadowMap.enabled = true;
@@ -370,7 +370,7 @@ function makeCylinderBetween(a, b, radius, mat) {
   const len = dir.length();
   const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, len, 10), mat);
   mesh.position.copy(a).add(b).multiplyScalar(0.5);
-  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
   mesh.castShadow = true;
   return mesh;
 }
@@ -444,8 +444,13 @@ const solarField = new THREE.Group();
 scene.add(solarField);
 
 const treeProto    = createSolarTree();
-const HEX_DX       = HEX_SIDE * 1.5;
-const HEX_DZ       = HEX_SIDE * Math.sqrt(3);
+// Offset hex grid (flat-top orientation):
+//   Column spacing: HEX_SIDE * 1.5 (= 18 m)
+//   Row spacing:    HEX_SIDE * sqrt(3) / 2 (= ~10.39 m)
+//   Odd rows offset by HEX_SIDE * 0.75 = 9 m in X
+//   Cell area = sqrt(3)/2 * (2 * HEX_SIDE)^2 * 3/2 ≈ 374.1 m²  → ~80.2 trees/ha ✓
+const HEX_DX       = HEX_SIDE * 1.5;          // 18 m column step
+const HEX_DZ       = HEX_SIDE * Math.sqrt(3); // 20.78 m; rows use half-step → 10.39 m
 const FIELD_RADIUS = IS_MOBILE ? 130 : 230;
 
 const treePositions = [];
@@ -758,9 +763,10 @@ seasonBtn.addEventListener('click', () => {
     ? '🌞 Summer / الصيف'
     : '❄️ Winter / الشتاء';
   // Rebuild heat map for new season
-  heatmapTexture.dispose();
+  const oldTexture = heatmapTexture;
   heatmapTexture = buildHeatmapTexture(SEASONS[currentSeason].declDeg);
   groundMat.map  = heatmapTexture;
+  oldTexture.dispose();
   groundMat.needsUpdate = true;
 });
 
@@ -779,9 +785,11 @@ recordBtn.addEventListener('click', () => {
   }
 
   const stream = canvas.captureStream(30);
+  // Attempt MP4 (Safari 15.4+ via video/mp4; Chrome/Firefox fall through to WebM)
   const mimeOptions = [
-    'video/mp4;codecs=avc1',
-    'video/webm;codecs=vp9',
+    'video/mp4;codecs=avc1',    // Safari 15.4+
+    'video/mp4',                // Safari fallback
+    'video/webm;codecs=vp9',    // Chrome/Edge
     'video/webm;codecs=vp8',
     'video/webm',
   ];
